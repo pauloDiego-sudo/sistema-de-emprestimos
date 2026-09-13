@@ -5,3 +5,4 @@ api/*.db
 node_modules/
 .next/
 .env.local
+web/tsconfig.tsbuildinfo
