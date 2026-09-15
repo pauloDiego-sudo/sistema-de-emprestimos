@@ -1,3 +1,7 @@
+# Decisões tomadas no desenvolvimento do sistema de empréstimos
+
+Autor: Paulo Diego De Meneses
+
 ## 1. Decisões assumidas
 
 ### 1.1 Quem opera o sistema
