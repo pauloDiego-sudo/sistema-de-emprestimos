@@ -24,7 +24,8 @@ def popular() -> None:
     bruno = Aluno(matricula="2023002", nome="Bruno Carvalho")
     carla = Aluno(matricula="2023003", nome="Carla Dias")
     diego = Aluno(matricula="2023004", nome="Diego Lopes")
-    db.add_all([ana, bruno, carla, diego])
+    elisa = Aluno(matricula="2023005", nome="Elisa Martins")
+    db.add_all([ana, bruno, carla, diego, elisa])
 
     notebook = Equipamento(
         patrimonio="PAT-001",
@@ -56,7 +57,19 @@ def popular() -> None:
         descricao="Fonte de bancada Instrutherm FA-3005",
         estado=EstadoEquipamento.INDISPONIVEL,
     )
-    db.add_all([notebook, projetor, multimetro, osciloscopio, kit_arduino, fonte])
+    protoboard = Equipamento(
+        patrimonio="PAT-007",
+        descricao="Protoboard 830 pontos com jumpers",
+        estado=EstadoEquipamento.EMPRESTADO,
+    )
+    gerador = Equipamento(
+        patrimonio="PAT-008",
+        descricao="Gerador de funcoes Minipa MFG-4202",
+        estado=EstadoEquipamento.INDISPONIVEL,
+    )
+    db.add_all(
+        [notebook, projetor, multimetro, osciloscopio, kit_arduino, fonte, protoboard, gerador]
+    )
     db.flush()
 
     # Ana: emprestimo em aberto e dentro do prazo, sem pendencia.
@@ -127,9 +140,40 @@ def popular() -> None:
         )
     )
 
+    # Elisa: pegou dois itens no mesmo dia; devolveu um com dano e ficou com o outro,
+    # que ja venceu (pendencia ATRASO_E_DANO).
+    inicio_elisa = hoje - timedelta(days=15)
+    db.add(
+        Emprestimo(
+            aluno_id=elisa.id,
+            equipamento_id=protoboard.id,
+            emprestado_em=inicio_elisa,
+            vence_em=calcular_vencimento(inicio_elisa),
+            operador_emprestimo="Tecnico Joao",
+        )
+    )
+    db.add(
+        Emprestimo(
+            aluno_id=elisa.id,
+            equipamento_id=gerador.id,
+            emprestado_em=inicio_elisa,
+            vence_em=calcular_vencimento(inicio_elisa),
+            devolvido_em=hoje - timedelta(days=12),
+            operador_emprestimo="Tecnico Joao",
+            operador_devolucao="Tecnica Maria",
+        )
+    )
+    db.add(
+        Pendencia(
+            aluno_id=elisa.id,
+            tipo=TipoPendencia.DANO,
+            aberta_em=hoje - timedelta(days=12),
+        )
+    )
+
     db.commit()
     db.close()
-    print("Banco populado: 4 alunos, 6 equipamentos, 4 emprestimos, 2 pendencias de dano.")
+    print("Banco populado: 5 alunos, 8 equipamentos, 6 emprestimos, 3 pendencias de dano.")
 
 
 if __name__ == "__main__":
