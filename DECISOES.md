@@ -192,3 +192,28 @@ Horas escrevendo ou gerando código: 1 hora.
 
 Horas decidindo o que o sistema deveria fazer: 45 minutos.
 
+# Analise de decisões nos dois eixos (trabalho 2)
+
+## Reversível: atraso arredondado para cima
+
+Um segundo depois do vencimento já conta como 1 dia de atraso. Essa decisao esta no quadrante Ágil ( Incerteza ALTA  + iteração BARATA).
+
+Não sabemos se o técnico aceita ler "1 dia" para 5 horas de atraso, mas o número é calculado na consulta, nunca gravado, e o bloqueio usa só `vence_em`.
+
+Depois podemos acrescentar ao script de seed um empréstimo vencido há 5 horas, abrimos a rota de atrasos com o técnico e, se "1 dia" não for o que ele espera, trocamos a conta de dias de atraso na mesma sessão.
+
+## Irreversível: operador gravado como texto livre
+
+Cada empréstimo e cada devolução gravam o nome do operador digitado à mão, sem login nem cadastro de técnicos.
+
+Essa decisão está no quadrante "Comprar informação antes" (Incerteza ALTA  + iteração CARÍSSIMA).
+
+Não sabemos se o cliente vai precisar provar quem entregou um item que sumiu, e, após o primeiro registro real, "Joao", "João" ou o nome de um colega não viram FK para `tecnicos`, porque quem de fato operou nunca foi gravado.
+
+Nenhum empréstimo real entra no banco, que continua só com o `seed.py`, até o cliente responder se precisa saber com certeza quem operou. Se sim, criamos `tecnicos` e trocamos as duas colunas por FK antes do primeiro registro no balcão. 
+
+## Mesmo sistema, quadrantes diferentes
+
+As duas decisões nascem do mesmo `POST /emprestimos`, ele grava `operador_emprestimo` e gera o `vence_em` de onde sai o atraso. Uma se testa e se desfaz em minutos; a outra deixa em cada linha do banco uma marca que não se apaga. Chamar o projeto de ágil ou de cascata erraria uma das duas, o processo certo depende de quanto custa voltar atrás em cada decisão.
+
+
