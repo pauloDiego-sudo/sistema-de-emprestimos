@@ -1,8 +1,26 @@
+# Python
 __pycache__/
-*.pyc
+*.py[cod]
 .venv/
-api/*.db
+venv/
+
+# Banco SQLite gerado pelo seed.py
+*.db
+*.db-journal
+
+# Node / Next.js
 node_modules/
 .next/
-.env.local
-web/tsconfig.tsbuildinfo
+out/
+*.tsbuildinfo
+npm-debug.log*
+
+# Variaveis de ambiente (o .env.example continua versionado)
+.env
+.env*.local
+
+# Sistema operacional e editores
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
