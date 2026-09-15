@@ -48,6 +48,7 @@ O script recria `api/emprestimos.db` do zero e insere:
 | Bruno Carvalho | `2023002` | emprestimo vencido em aberto (pendencia de ATRASO) |
 | Carla Dias | `2023003` | pendencia de DANO em aberto (id 1) |
 | Diego Lopes | `2023004` | pendencia de DANO ja quitada |
+| Elisa Martins | `2023005` | emprestimo vencido em aberto e pendencia de DANO em aberto (ATRASO_E_DANO) |
 
 | Patrimonio | Equipamento | Estado |
 | --- | --- | --- |
@@ -57,6 +58,8 @@ O script recria `api/emprestimos.db` do zero e insere:
 | `PAT-004` | Osciloscopio Tektronix TBS1052 | DISPONIVEL |
 | `PAT-005` | Kit Arduino Uno completo | EMPRESTADO |
 | `PAT-006` | Fonte de bancada Instrutherm FA-3005 | INDISPONIVEL |
+| `PAT-007` | Protoboard 830 pontos com jumpers | EMPRESTADO |
+| `PAT-008` | Gerador de funcoes Minipa MFG-4202 | INDISPONIVEL |
 
 ## Rodar
 
@@ -197,6 +200,16 @@ Carla (`2023003`) tem dano em aberto — mesmo `409`, com `"motivo":"DANO"`:
 curl -i -X POST http://localhost:8000/emprestimos \
   -H 'Content-Type: application/json' \
   -d '{"matricula":"2023003","patrimonio":"PAT-004","operador":"Tecnico Joao"}'
+```
+
+Elisa (`2023005`) tem as duas pendencias ao mesmo tempo: devolveu um item com
+dano e ainda esta com outro, ja vencido. Responde `409` com
+`"motivo":"ATRASO_E_DANO"`:
+
+```bash
+curl -i -X POST http://localhost:8000/emprestimos \
+  -H 'Content-Type: application/json' \
+  -d '{"matricula":"2023005","patrimonio":"PAT-004","operador":"Tecnico Joao"}'
 ```
 
 ### 6. Quitar pendencia de dano
